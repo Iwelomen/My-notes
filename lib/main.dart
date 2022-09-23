@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'RegisterScreen/register_screen.dart';
+
+import 'Screens/login_screen.dart';
+import 'Screens/register_screen.dart';
+import 'Screens/verify_email.dart';
 import 'firebase_options.dart';
 
 void main() {
@@ -14,6 +17,10 @@ void main() {
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => RegisterScreen(),
+      },
     ),
   );
 }
@@ -23,36 +30,32 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text('Home'),
+    return FutureBuilder(
+      future: Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
-        child: FutureBuilder(
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                final user = FirebaseAuth.instance.currentUser;
-                if(user?.emailVerified ?? false) {
-                   print('You are a verified user');
-                } else {
-                  print('Verify your email address');
-                }
-                return const Text('Done');
-              default:
-                return const Text('Loading...');
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            final user = FirebaseAuth.instance.currentUser;
+            if (user?.emailVerified ?? false) {
+              return const LoginScreen();
+            } else {
+              // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              //   Navigator.of(context).push(
+              //     MaterialPageRoute(
+              //       builder: (context) => const VerifyEmailScreen(),
+              //     ),
+              //   );
+              // });
+              return const VerifyEmailScreen();
             }
-          },
-        ),
-      ),
+
+          default:
+            return const CircularProgressIndicator();
+        }
+      },
     );
   }
 }
-
-
 
