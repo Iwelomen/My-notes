@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../Constants/routes.dart';
+
 class VerifyEmailScreen extends StatefulWidget {
   const VerifyEmailScreen({Key? key}) : super(key: key);
 
@@ -20,7 +22,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
-            'Please verify your email address',
+            'An email has been sent to you. \n\n If you did not get an email, click on verify',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 5),
@@ -30,6 +32,16 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               await user?.sendEmailVerification();
             },
             child: const Text('Verify'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                registerRoute,
+                (route) => false,
+              );
+            },
+            child: const Text('Restart'),
           ),
         ],
       ),

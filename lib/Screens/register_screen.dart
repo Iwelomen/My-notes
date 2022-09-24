@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/Constants/routes.dart';
+import 'package:mynotes/Utils/show_error_dialog.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -63,20 +64,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
               final password = _passwordController.text;
 
               try {
-                final userCredential =
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
                   email: email,
                   password: password,
                 );
-                print(userCredential);
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+
+                Navigator.of(context).pushNamed(verifyEmailRoute);
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
-                  print('weak password entered');
+                  await showErrorDialog(
+                    context,
+                    'weak password',
+                  );
                 } else if (e.code == 'email-already-in-use') {
-                  print('email already in use');
+                  await showErrorDialog(
+                    context,
+                    'email already in use',
+                  );
                 } else if (e.code == 'invalid-email') {
-                  print('invalid email entered');
+                  await showErrorDialog(
+                    context,
+                    'invalid email entered',
+                  );
                 }
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text('Register'),
@@ -85,7 +102,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           TextButton(
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
-                  context, loginRoute, (route) => false);
+                context,
+                loginRoute,
+                (route) => false,
+              );
             },
             child: const Text('Already registered? Click here to login'),
           ),

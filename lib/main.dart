@@ -7,7 +7,6 @@ import 'Screens/login_screen.dart';
 import 'Screens/register_screen.dart';
 import 'Screens/verify_email.dart';
 import 'firebase_options.dart';
-import 'dart:developer' as devtools show log;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +22,8 @@ void main() {
         loginRoute: (context) => const LoginScreen(),
         registerRoute: (context) => RegisterScreen(),
         notesRoute: (context) => const NoteScreen(),
+        verifyEmailRoute: (context) => const VerifyEmailScreen(),
+
       },
     ),
   );

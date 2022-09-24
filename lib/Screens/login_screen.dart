@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
-
 import 'package:mynotes/Constants/routes.dart';
+import '../Utils/show_error_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -67,22 +66,47 @@ class _LoginScreenState extends State<LoginScreen> {
               final password = _passwordController.text;
 
               try {
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
                   email: email,
                   password: password,
                 );
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  notesRoute,
-                  (route) => false,
-                );
+                final user = FirebaseAuth.instance.currentUser;
+                if(user?.emailVerified ?? false) {
+                  // login
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    notesRoute,
+                        (route) => false,
+                  );
+                } else {
+                  // go to verification screen
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    verifyEmailRoute,
+                        (route) => false,
+                  );
+                }
+
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  devtools.log('user not found');
+                  await showErrorDialog(
+                    context,
+                    'user not found',
+                  );
                 } else if (e.code == 'wrong-password') {
-                  devtools.log('wrong password');
+                  await showErrorDialog(
+                    context,
+                    'wrong credentials ',
+                  );
                 } else {
-                  devtools.log(e.code);
+                  await showErrorDialog(
+                    context,
+                    'Error: ${e.code}',
+                  );
                 }
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text('Login'),
@@ -100,3 +124,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
