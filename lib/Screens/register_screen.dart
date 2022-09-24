@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/Constants/routes.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -84,7 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           TextButton(
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
-                  context, '/login', (route) => false);
+                  context, loginRoute, (route) => false);
             },
             child: const Text('Already registered? Click here to login'),
           ),
