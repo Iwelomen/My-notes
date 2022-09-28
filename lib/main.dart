@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/Constants/routes.dart';
-import 'package:mynotes/Services/Auth/auth_service.dart';
+import 'package:mynotes/Services/Auth/Auth/auth_service.dart';
 
 import 'Screens/login_screen.dart';
 import 'Screens/notesScreen.dart';

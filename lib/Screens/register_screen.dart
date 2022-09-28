@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/Constants/routes.dart';
-import 'package:mynotes/Services/Auth/auth_exceptions.dart';
-import 'package:mynotes/Services/Auth/auth_service.dart';
+import 'package:mynotes/Services/Auth/Auth/auth_exceptions.dart';
+import 'package:mynotes/Services/Auth/Auth/auth_service.dart';
 import 'package:mynotes/Utils/show_error_dialog.dart';
 
 class RegisterScreen extends StatefulWidget {
