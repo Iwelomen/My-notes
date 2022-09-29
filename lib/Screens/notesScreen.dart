@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/Services/Auth/Auth/auth_service.dart';
+import 'package:mynotes/Services/Auth/Crud/note_service.dart';
 import '../Constants/routes.dart';
 import '../Enums/menu_action.dart';
 import '../main.dart';
+
 class NoteScreen extends StatefulWidget {
   const NoteScreen({Key? key}) : super(key: key);
 
@@ -11,6 +13,22 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
+  late final NoteService _noteService;
+
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+
+  @override
+  void initState() {
+    _noteService = NoteService();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _noteService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +45,7 @@ class _NoteScreenState extends State<NoteScreen> {
                     await AuthService.firebase().logout();
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       loginRoute,
-                          (route) => false,
+                      (route) => false,
                     );
                   }
               }
@@ -43,7 +61,28 @@ class _NoteScreenState extends State<NoteScreen> {
           ),
         ],
       ),
-      body: const Text('Hello World'),
+      body: FutureBuilder(
+          future: _noteService.getOrCreateUser(email: userEmail),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return StreamBuilder(
+                    stream: _noteService.allNotes,
+                    builder: (context, snapshot){
+                      switch (snapshot.connectionState){
+                        case ConnectionState.waiting:
+                          return const Text('Waiting for all notes...');
+                        default:
+                          return const CircularProgressIndicator();
+
+                      }
+                    }
+                );
+
+              default:
+                return const CircularProgressIndicator();
+            }
+          }),
     );
   }
 }
