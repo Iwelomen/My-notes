@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/Constants/routes.dart';
 import 'package:mynotes/Services/Auth/Auth/auth_service.dart';
+import 'package:path/path.dart';
 
+import 'Screens/Note/new_notes_screen.dart';
 import 'Screens/login_screen.dart';
-import 'Screens/notesScreen.dart';
+import 'Screens/Note/notesScreen.dart';
 import 'Screens/register_screen.dart';
 import 'Screens/verify_email.dart';
-
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,7 @@ void main() {
         registerRoute: (context) => RegisterScreen(),
         notesRoute: (context) => const NoteScreen(),
         verifyEmailRoute: (context) => const VerifyEmailScreen(),
-
+        newNotesRoute: (context) => const NewNotesScreen(),
       },
     ),
   );
@@ -56,10 +57,6 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 Future<bool> showLogoutDialog(context) {
   return showDialog<bool>(

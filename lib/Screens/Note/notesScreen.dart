@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/Services/Auth/Auth/auth_service.dart';
 import 'package:mynotes/Services/Auth/Crud/note_service.dart';
-import '../Constants/routes.dart';
-import '../Enums/menu_action.dart';
-import '../main.dart';
+import '../../Constants/routes.dart';
+import '../../Enums/menu_action.dart';
+import '../../main.dart';
 
 class NoteScreen extends StatefulWidget {
   const NoteScreen({Key? key}) : super(key: key);
@@ -36,6 +36,12 @@ class _NoteScreenState extends State<NoteScreen> {
         centerTitle: false,
         title: const Text('Main UI'),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(newNotesRoute);
+            },
+            icon: const Icon(Icons.add),
+          ),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               switch (value) {
@@ -68,16 +74,14 @@ class _NoteScreenState extends State<NoteScreen> {
               case ConnectionState.done:
                 return StreamBuilder(
                     stream: _noteService.allNotes,
-                    builder: (context, snapshot){
-                      switch (snapshot.connectionState){
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
                         case ConnectionState.waiting:
                           return const Text('Waiting for all notes...');
                         default:
                           return const CircularProgressIndicator();
-
                       }
-                    }
-                );
+                    });
 
               default:
                 return const CircularProgressIndicator();
